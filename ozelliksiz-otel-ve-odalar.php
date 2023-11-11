@@ -44,8 +44,8 @@ $hotels = $hotelManagement->getHotelWithoutFeature();
 
                 foreach ($groupedHotels as $otelAdi => $odalar) { 
                   ?>
-                  <div class="col-lg-3">
-                    <div class="card" style="width: 18rem; border: 1px solid #c1c1c1;">
+                  <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="card" style="border: 1px solid #c1c1c1;">
                       <div class="card-body">
                         <h5 class="card-title"><?php echo $otelAdi ?></h5>
                       </div>

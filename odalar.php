@@ -5,26 +5,12 @@ $rooms = $hotelManagement->getHotelRooms($_GET['otel_id']);
 if(isset($_POST['odaEkle'])){
   $otel_id = htmlspecialchars($_GET['otel_id']);
   $oda_adi = htmlspecialchars($_POST['oda_adi']);
+  $ozellikler = isset($_POST['ozellikler']) ? $_POST['ozellikler'] : [];
+  $oda_aktif = $_POST['oda_aktif'] == "" ? 0 : 1;
+  $satis_durum = $_POST['satis_durum'] == "" ? 0 : 1;
+  $sil_durum = $_POST['sil_durum'] == "" ? 0 : 1;
 
-  if($_POST['oda_aktif'] == ""){
-    $oda_aktif = '0';
-  }else{
-    $oda_aktif = '1';
-  }
-
-  if($_POST['satis_durum'] == ""){
-    $satis_durum = '0';
-  }else{
-    $satis_durum = '1';
-  }
-
-  if($_POST['sil_durum'] == ""){
-    $sil_durum = '0';
-  }else{
-    $sil_durum = '1';
-  }
-
-  if ($hotelManagement->addHotelRoom($otel_id, $oda_adi, $oda_aktif, $satis_durum, $sil_durum)) {
+  if ($hotelManagement->addHotelRoom($otel_id, $oda_adi, $ozellikler, $oda_aktif, $satis_durum, $sil_durum)) {
     header('location: '.$_SERVER['REQUEST_URI']);
     exit;
   }else{
@@ -105,21 +91,24 @@ if(isset($_POST['updateHotelRoomStatus'])){
                         <td><?php echo $room['oda_id'] ?></td>
                         <td><?php echo $room['oda_adi'] ?></td>
                         <td>
-                          <div class="custom-control custom-switch">
+                          <div class="custom-control custom-switch d-flex">
                             <input type="checkbox" class="custom-control-input aktiflik" data-id="oda_aktif" data-field="<?php echo $room['oda_id'] ?>" id="durum<?php echo $room['oda_id'] ?>" <?php echo $room['oda_aktif'] == 1 ? "checked" : "" ?>>
                             <label class="custom-control-label" for="durum<?php echo $room['oda_id'] ?>"></label>
+                            <div class="mt-1" data-field="aktif<?php echo $room['oda_id'] ?>"><?php echo $room['oda_aktif'] == 1 ? "Aktif" : "Pasif" ?></div>
                           </div>
                         </td>
                         <td>
-                          <div class="custom-control custom-switch">
+                          <div class="custom-control custom-switch d-flex">
                             <input type="checkbox" class="custom-control-input aktiflik" data-id="satis_durum" data-field="<?php echo $room['oda_id'] ?>" id="satis<?php echo $room['oda_id'] ?>" <?php echo $room['satis_durum'] == 1 ? "checked" : "" ?>>
                             <label class="custom-control-label" for="satis<?php echo $room['oda_id'] ?>"></label>
+                            <div class="mt-1" data-field="satis<?php echo $room['oda_id'] ?>"><?php echo $room['satis_durum'] == 1 ? "Satışta" : "Satışta Değil" ?></div>
                           </div>
                         </td>
                         <td>
-                          <div class="custom-control custom-switch">
+                          <div class="custom-control custom-switch d-flex">
                             <input type="checkbox" class="custom-control-input aktiflik" data-id="sil_durum" data-field="<?php echo $room['oda_id'] ?>" id="silme<?php echo $room['oda_id'] ?>" <?php echo $room['sil_durum'] == 1 ? "checked" : "" ?>>
                             <label class="custom-control-label" for="silme<?php echo $room['oda_id'] ?>"></label>
+                            <div class="mt-1" data-field="sil<?php echo $room['oda_id'] ?>"><?php echo $room['sil_durum'] == 1 ? "Silindi" : "Silinmedi" ?></div>
                           </div>
                         </td>
                         <td>
@@ -159,26 +148,46 @@ if(isset($_POST['updateHotelRoomStatus'])){
           <div class="card">
             <div class="card-body">
               <form class="forms-sample" method="POST">
-                <div class="form-group">
-                  <label for="exampleInputUsername1">Oda Adı</label>
-                  <input type="text" class="form-control" name="oda_adi" id="exampleInputUsername1" placeholder="Oda Adı">
-                </div>
-                <label>Durum</label>
-                <div class="custom-control custom-switch">
-                  <input type="checkbox" class="custom-control-input" id="switchDurum" value="1" name="oda_aktif">
-                  <label class="custom-control-label" for="switchDurum"></label>
-                </div>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="form-group">
+                      <label for="exampleInputUsername1">Oda Adı</label>
+                      <input type="text" class="form-control" name="oda_adi" id="exampleInputUsername1" placeholder="Oda Adı">
+                    </div>
+                  </div>
 
-                <label>Satış Durum</label>
-                <div class="custom-control custom-switch">
-                  <input type="checkbox" class="custom-control-input" id="switchSatis" value="1" name="satis_durum">
-                  <label class="custom-control-label" for="switchSatis"></label>
-                </div>
+                  <div class="col-lg-4">
+                    <label>Durum</label>
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input" id="switchDurum" value="1" name="oda_aktif">
+                      <label class="custom-control-label" for="switchDurum"></label>
+                    </div>
+                  </div>
 
-                <label>Sil Durum</label>
-                <div class="custom-control custom-switch">
-                  <input type="checkbox" class="custom-control-input" id="switchIptal" value="1" name="sil_durum">
-                  <label class="custom-control-label" for="switchIptal"></label>
+                  <div class="col-lg-4">
+                    <label>Satış Durum</label>
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input" id="switchSatis" value="1" name="satis_durum">
+                      <label class="custom-control-label" for="switchSatis"></label>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4">
+                    <label>Sil Durum</label>
+                    <div class="custom-control custom-switch">
+                      <input type="checkbox" class="custom-control-input" id="switchIptal" value="1" name="sil_durum">
+                      <label class="custom-control-label" for="switchIptal"></label>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-12">
+                    <hr>
+                    <h5>Oda Özellikleri</h5>
+                    <hr>
+                  </div>
+
+                  <?php $showcheckbox = $hotelManagement->showCheckboxes(); ?>
+
                 </div>
               </div>
             </div>
@@ -232,6 +241,26 @@ if(isset($_POST['updateHotelRoomStatus'])){
           var type = $(this).attr("data-id");
           var status = $(this).is(":checked") ? '1' : '0';
           var updateHotelRoomStatus = "guncelle";
+
+          if(type == "oda_aktif"){
+            if(status == 1){
+              $('[data-field="aktif'+oda_id+'"]').html("Aktif");
+            }else{
+              $('[data-field="aktif'+oda_id+'"]').html("Pasif");
+            }
+          }else if(type == "satis_durum"){
+            if(status == 1){
+              $('[data-field="satis'+oda_id+'"]').html("Satışta");
+            }else{
+              $('[data-field="satis'+oda_id+'"]').html("Satışta Değil");
+            }
+          }else{
+            if(status == 1){
+              $('[data-field="sil'+oda_id+'"]').html("Silindi");
+            }else{
+              $('[data-field="sil'+oda_id+'"]').html("Silinmedi");
+            }
+          }
 
           $.ajax({
             type: "POST",

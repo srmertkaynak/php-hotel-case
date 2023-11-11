@@ -45,18 +45,17 @@ $hotels = $hotelManagement->getHotelWithFeature();
 
                 foreach ($groupedHotels as $otelAdi => $odalar) { 
                   ?>
-                  <div class="col-lg-3">
-                    <div class="card" style="width: 18rem; border: 1px solid #c1c1c1;">
+                  <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="card" style="border: 1px solid #c1c1c1;">
                       <div class="card-body">
                         <h5 class="card-title"><?php echo $otelAdi ?></h5>
                       </div>
                       <ul class="list-group list-group-flush">
                         <?php foreach($odalar as $odaAdi => $ozellikler){ ?>
-                          <li class="list-group-item"><?php echo $odaAdi ?>
-                          <hr>
+                          <li class="list-group-item" style="font-size: 14px;"><mark class="bg-success text-white p-1"><?php echo $odaAdi ?></mark>
                           <ul class="list-group list-group-flush">
                             <?php foreach($ozellikler as $odalarozellikitem){ ?>
-                              <li class="list-group-item"><?php echo $odalarozellikitem ?></li>
+                              <li class="list-group-item"><i class="ti-check-box mr-1"></i> <?php echo $odalarozellikitem ?></li>
                             <?php } ?>
                           </ul>
                         </li>
