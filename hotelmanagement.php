@@ -78,27 +78,46 @@ class HotelManagement
 			$this->addPivotTable($otel_id, $son_eklenen_oda_id, $ozellikler);
 		}
 
-		return "ok";
+		return true;
 	}
 
 	public function addPivotTable($otel_id, $son_eklenen_oda_id, $ozellikler)
 	{
 		foreach ($ozellikler as $fieldId) {
-			$query2 = $this->db->prepare("INSERT INTO otel_oda_ozellik (otel_id, oda_id, ozellik_id) VALUES (:otel_id, :oda_id, :ozellik_id)");
-			$query2->bindParam(':otel_id', $otel_id);
-			$query2->bindParam(':oda_id', $son_eklenen_oda_id);
-			$query2->bindParam(':ozellik_id', $fieldId);
-			$query2->execute();
+			$query = $this->db->prepare("INSERT INTO otel_oda_ozellik (otel_id, oda_id, ozellik_id) VALUES (:otel_id, :oda_id, :ozellik_id)");
+			$query->bindParam(':otel_id', $otel_id);
+			$query->bindParam(':oda_id', $son_eklenen_oda_id);
+			$query->bindParam(':ozellik_id', $fieldId);
+			$query->execute();
 		}
-		return "kayıtlar eklendi";
+		return true;
 	}
 
-	public function updateHotelRoom($oda_adi, $oda_id, $ozellikler)
+	public function updateHotelRoomFeature($oda_id, $oda_adi, $ozellikler, $otel_id)
 	{
 		$query = $this->db->prepare("UPDATE otel_oda_tanim SET oda_adi = :oda_adi WHERE oda_id = :oda_id");
 		$query->bindParam(":oda_adi", $oda_adi);
 		$query->bindParam(":oda_id", $oda_id);
-		return $query->execute();
+		$query->execute();
+
+		$query = $this->db->prepare("DELETE FROM otel_oda_ozellik WHERE oda_id = :oda_id");
+		$query->bindParam(":oda_id", $oda_id);
+		$query->execute();
+
+
+		if (isset($ozellikler)) {
+
+			foreach ($ozellikler as $fieldId) {
+				$query = $this->db->prepare("INSERT INTO otel_oda_ozellik (otel_id, oda_id, ozellik_id) VALUES (:otel_id, :oda_id, :ozellik_id)");
+				$query->bindParam(':otel_id', $otel_id);
+				$query->bindParam(':oda_id', $oda_id);
+				$query->bindParam(':ozellik_id', $fieldId);
+				$query->execute();
+			}
+
+		}
+
+		return true;
 	}
 
 	public function updateHotelRoomStatus($oda_id, $type, $status)
@@ -121,34 +140,25 @@ class HotelManagement
 		}
 	}
 
-	public function showSelectedCheckboxes($ozellikler)
+	public function showSelectedCheckboxes($oda_id)
 	{
-            // Veritabanındaki seçilmiş alanları seç
-		$selectedQuery = "SELECT fieldId FROM your_selected_fields_table";
-		$selectedStmt = $this->db->query($selectedQuery);
+		$query = $this->db->prepare("SELECT ozellik_id FROM otel_oda_ozellik WHERE oda_id = :oda_id");
+		$query->bindParam(':oda_id', $oda_id, PDO::PARAM_INT);
+		$query->execute();
 
-            // Seçilmiş checkboxları ekrana bas
 		$selectedCheckboxIds = [];
-		while ($selectedRow = $selectedStmt->fetch(PDO::FETCH_ASSOC)) {
-			$selectedCheckboxIds[] = $selectedRow['fieldId'];
+		while ($selectedRow = $query->fetch(PDO::FETCH_ASSOC)) {
+			$selectedCheckboxIds[] = $selectedRow['ozellik_id'];
 		}
 
-		$query = "SELECT id, fieldName FROM your_table_name";
-		$stmt = $this->db->query($query);
+		$query = $this->db->prepare("SELECT * FROM oda_ozellik_tanim");
+		$query->execute();
 
-            // Checkboxları ekrana bas ve seçili olanları checked yap
-		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 			$checked = in_array($row['ozellik_id'], $selectedCheckboxIds) ? 'checked' : '';
-			echo '<input type="checkbox" name="ozellikler[]" value="' . $row['ozellik_id'] . '" ' . $checked . '>' . $row['ozellik_adi'] . '<br>';
-		}
-	}
 
-	public function updateHotelRoomFeature($ozellik_adi, $ozellik_id)
-	{
-		$query = $this->db->prepare("UPDATE oda_ozellik_tanim SET ozellik_adi = :ozellik_adi WHERE ozellik_id = :ozellik_id");
-		$query->bindParam(":ozellik_adi", $oda_adi);
-		$query->bindParam(":ozellik_id", $ozellik_id);
-		return $query->execute();
+			echo '<div class="col-lg-4"><div class="form-check form-check-flat form-check-primary"><label class="form-check-label"><input type="checkbox" name="ozellikler[]" value="' . $row['ozellik_id'] . '" class="form-check-input" ' . $checked . '>' . $row['ozellik_adi'] . ' <i class="input-helper"></i></label></div></div>';
+		}
 	}
 	// Oda özellik ile alakalı CRUD alanları Bitiş
 

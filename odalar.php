@@ -22,8 +22,10 @@ if(isset($_POST['odaEkle'])){
 if(isset($_POST['odaDuzenle'])){
   $oda_adi = htmlspecialchars($_POST['oda_adi']);
   $oda_id = htmlspecialchars($_POST['oda_id']);
+  $otel_id = htmlspecialchars($_GET['otel_id']);
+  $ozellikler = isset($_POST['ozellikler']) ? $_POST['ozellikler'] : [];
 
-  if ($hotelManagement->updateHotelRoom($oda_adi, $oda_id)) {
+  if ($hotelManagement->updateHotelRoomFeature($oda_id, $oda_adi, $ozellikler, $otel_id)) {
     header('location: '.$_SERVER['REQUEST_URI']);
     exit;
   }else{
@@ -112,10 +114,6 @@ if(isset($_POST['updateHotelRoomStatus'])){
                           </div>
                         </td>
                         <td>
-                          <a href="oda-ozellikleri.php?otel_id=<?php echo $room['otel_id'] ?>&oda_id=<?php echo $room['oda_id'] ?>" class="btn btn-primary btn-icon-text otelAktiflik">
-                            <i class="ti-file btn-icon-prepend"></i>
-                            Özellikler
-                          </a>
                           <button type="button" data-toggle="modal" data-target="#odaDuzenle<?php echo $room['oda_id'] ?>" class="btn btn-dark btn-icon-text">
                             <i class="ti-pencil btn-icon-append pr-1"></i>        
                             Düzenle                  
@@ -214,12 +212,27 @@ if(isset($_POST['updateHotelRoomStatus'])){
             <div class="card">
               <div class="card-body">
                 <form class="forms-sample" method="POST">
-                  <div class="form-group">
-                    <label for="exampleInputUsername1">Oda Adı</label>
-                    <input type="text" class="form-control" name="oda_adi" value="<?php echo $room['oda_adi'] ?>" id="exampleInputUsername1" placeholder="Oda Adı">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label for="exampleInputUsername1">Oda Adı</label>
+                        <input type="text" class="form-control" name="oda_adi" value="<?php echo $room['oda_adi'] ?>" id="exampleInputUsername1" placeholder="Oda Adı">
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <hr>
+                      <h5>Oda Özellikleri</h5>
+                      <hr>
+                    </div>
+
+                    <?php $showcheckbox = $hotelManagement->showSelectedCheckboxes($room['oda_id']); ?>
+
                   </div>
                 </div>
               </div>
+
+
+
               <div class="modal-footer">
                 <input type="hidden" name="oda_id" value="<?php echo $room['oda_id'] ?>">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
