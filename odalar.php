@@ -2,7 +2,7 @@
 
 $rooms = $hotelManagement->getHotelRooms($_GET['otel_id']);
 
-if(isset($_POST['odaEkle'])){
+if(isset($_POST['addHotelRoom'])){
   $otel_id = htmlspecialchars($_GET['otel_id']);
   $oda_adi = htmlspecialchars($_POST['oda_adi']);
   $ozellikler = isset($_POST['ozellikler']) ? $_POST['ozellikler'] : [];
@@ -19,7 +19,7 @@ if(isset($_POST['odaEkle'])){
   }
 }
 
-if(isset($_POST['odaDuzenle'])){
+if(isset($_POST['updateHotelRoomFeature'])){
   $oda_adi = htmlspecialchars($_POST['oda_adi']);
   $oda_id = htmlspecialchars($_POST['oda_id']);
   $otel_id = htmlspecialchars($_GET['otel_id']);
@@ -40,6 +40,19 @@ if(isset($_POST['updateHotelRoomStatus'])){
   $status = htmlspecialchars($_POST['status']);
 
   if ($hotelManagement->updateHotelRoomStatus($oda_id, $type, $status)) {
+    echo "basarili";
+    exit;
+  }else{
+    echo "basarisiz";
+    exit;
+  }
+}
+
+if(isset($_POST['deleteSingleRoomAndFeatures'])){
+  $otel_id = htmlspecialchars($_POST['otel_id']);
+  $oda_id = htmlspecialchars($_POST['oda_id']);
+
+  if ($hotelManagement->deleteSingleRoomAndFeatures($otel_id, $oda_id)) {
     echo "basarili";
     exit;
   }else{
@@ -118,6 +131,10 @@ if(isset($_POST['updateHotelRoomStatus'])){
                             <i class="ti-pencil btn-icon-append pr-1"></i>        
                             Düzenle                  
                           </button>
+                          <button type="button" data-id="<?php echo $room['oda_id'] ?>" class="btn btn-danger btn-icon-text odaSil">
+                            <i class="ti-trash btn-icon-prepend"></i>                                                    
+                            Sil
+                          </button>
                         </td>
                       </tr>
                     <?php } ?>
@@ -191,7 +208,7 @@ if(isset($_POST['updateHotelRoomStatus'])){
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
-              <button type="submit" name="odaEkle" class="btn btn-primary">Ekle</button>
+              <button type="submit" name="addHotelRoom" class="btn btn-primary">Ekle</button>
             </div>
           </form>
         </div>
@@ -236,14 +253,73 @@ if(isset($_POST['updateHotelRoomStatus'])){
               <div class="modal-footer">
                 <input type="hidden" name="oda_id" value="<?php echo $room['oda_id'] ?>">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
-                <button type="submit" name="odaDuzenle" class="btn btn-primary">Kaydet</button>
+                <button type="submit" name="updateHotelRoomFeature" class="btn btn-primary">Kaydet</button>
               </div>
             </form>
           </div>
         </div>
       </div>
     <?php } ?>
+
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      $(".odaSil").on("click", function() {
+
+        var idAl = $(this).attr("data-id");
+        const otel_id = "<?php echo $_GET['otel_id'] ?>";
+
+        Swal.fire({
+          title: 'Emin misiniz?',
+          text: "Kaydınız silinecektir. Emin misiniz?",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#232A30',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Evet',
+          cancelButtonText: 'Hayır'
+        }).then((result) => {
+
+          if (result.isConfirmed) {
+
+            var serializedData = {
+              "otel_id": otel_id,
+              "oda_id": idAl,
+              "deleteSingleRoomAndFeatures": "var"
+            };
+
+            $.ajax({
+              type: "POST",
+              url: "odalar.php",
+              data: serializedData,
+              success: function(x) {
+                if (x == 'basarili') {
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Kayıt Silindi!',
+                    text: 'Kaydınız başarıyla sistemden kaldırıldı.',
+                    confirmButtonColor: '#232A30',
+                    confirmButtonText: 'Tamam'
+                  }).then(() => {
+                    window.location.href = window.location.href;
+                  });
+                } else {
+                  Swal.fire({
+                    icon: 'warning',
+                    title: "Bir Hata Oluştu!",
+                    text: 'Kaydınızı silerken bir hata oluştu. Tekrar deneyiniz.',
+                    confirmButtonColor: '#232A30',
+                    confirmButtonText: 'Tamam'
+                  });
+                }
+              }
+            });
+
+          }
+        })
+
+      });
+    </script>
 
     <script type="text/javascript">
       $(document).ready(function() {
@@ -280,7 +356,6 @@ if(isset($_POST['updateHotelRoomStatus'])){
             url: "odalar.php",
             data: {oda_id:oda_id,type:type,status:status,updateHotelRoomStatus:updateHotelRoomStatus},
             success: function(x) {
-              console.log(x);
               if (x == 'basarili') {
                 Swal.fire({
                   icon: 'success',

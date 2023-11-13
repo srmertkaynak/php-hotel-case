@@ -42,6 +42,39 @@ class HotelManagement
 	{
 		$query = $this->db->prepare("DELETE FROM oteller WHERE otel_id = :otel_id");
 		$query->bindParam(":otel_id", $otel_id);
+
+		$this->deleteAllRoomAndFeatures($otel_id);
+		return $query->execute();
+	}
+
+	public function deleteAllRoomAndFeatures($otel_id)
+	{
+		$query = $this->db->prepare("DELETE FROM otel_oda_tanim WHERE otel_id = :otel_id");
+		$query->bindParam(":otel_id", $otel_id);
+		$query->execute();
+
+		$queryTwo = $this->db->prepare("DELETE FROM otel_oda_ozellik WHERE otel_id = :otel_id");
+		$queryTwo->bindParam(":otel_id", $otel_id);
+		return $queryTwo->execute();
+	}
+
+	public function deleteSingleRoomAndFeatures($otel_id, $oda_id)
+	{
+		$query = $this->db->prepare("DELETE FROM otel_oda_tanim WHERE otel_id = :otel_id AND oda_id = :oda_id");
+		$query->bindParam(":otel_id", $otel_id);
+		$query->bindParam(":oda_id", $oda_id);
+		$query->execute();
+
+		$queryTwo = $this->db->prepare("DELETE FROM otel_oda_ozellik WHERE otel_id = :otel_id AND oda_id = :oda_id");
+		$queryTwo->bindParam(":otel_id", $otel_id);
+		$queryTwo->bindParam(":oda_id", $oda_id);
+		return $queryTwo->execute();
+	}
+
+	public function deleteHotelRoomFeatures($otel_id)
+	{
+		$query = $this->db->prepare("DELETE FROM otel_oda_tanim WHERE otel_id = :otel_id");
+		$query->bindParam(":otel_id", $otel_id);
 		return $query->execute();
 	}
 

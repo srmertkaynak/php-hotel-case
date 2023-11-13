@@ -2,7 +2,7 @@
 
 $hotels = $hotelManagement->getAllHotels();
 
-if(isset($_POST['otelEkle'])){
+if(isset($_POST['addHotel'])){
   $otel_adi = htmlspecialchars($_POST['otel_adi']);
   $otel_aktif = htmlspecialchars($_POST['otel_aktif']);
 
@@ -15,7 +15,7 @@ if(isset($_POST['otelEkle'])){
   }
 }
 
-if(isset($_POST['otelDuzenle'])){
+if(isset($_POST['updateHotel'])){
   $otel_adi = htmlspecialchars($_POST['otel_adi']);
   $otel_id = htmlspecialchars($_POST['otel_id']);
 
@@ -28,7 +28,7 @@ if(isset($_POST['otelDuzenle'])){
   }
 }
 
-if(isset($_POST['otelSil'])){
+if(isset($_POST['deleteHotel'])){
   $otel_id = htmlspecialchars($_POST['otel_id']);
 
   if ($hotelManagement->deleteHotel($otel_id)) {
@@ -154,7 +154,7 @@ if(isset($_POST['updateHotelStatus'])){
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
-              <button type="submit" name="otelEkle" class="btn btn-primary">Ekle</button>
+              <button type="submit" name="addHotel" class="btn btn-primary">Ekle</button>
             </div>
           </form>
         </div>
@@ -184,7 +184,7 @@ if(isset($_POST['updateHotelStatus'])){
               <div class="modal-footer">
                 <input type="hidden" name="otel_id" value="<?php echo $hotel['otel_id'] ?>">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
-                <button type="submit" name="otelDuzenle" class="btn btn-primary">Kaydet</button>
+                <button type="submit" name="updateHotel" class="btn btn-primary">Kaydet</button>
               </div>
             </form>
           </div>
@@ -213,7 +213,7 @@ if(isset($_POST['updateHotelStatus'])){
 
             var serializedData = {
               "otel_id": idAl,
-              "otelSil": "var"
+              "deleteHotel": "var"
             };
 
             $.ajax({
@@ -263,7 +263,6 @@ if(isset($_POST['updateHotelStatus'])){
             url: "index.php",
             data: {otel_id:otel_id,status:status,updateHotelStatus:updateHotelStatus},
             success: function(x) {
-              console.log(x);
               if (x == 'basarili') {
                 Swal.fire({
                   icon: 'success',

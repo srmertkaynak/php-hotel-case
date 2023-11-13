@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Anamakine: localhost:3306
--- Üretim Zamanı: 09 Kas 2023, 03:32:17
+-- Üretim Zamanı: 14 Kas 2023, 01:22:16
 -- Sunucu sürümü: 10.4.24-MariaDB
 -- PHP Sürümü: 7.4.28
 
@@ -37,11 +37,16 @@ CREATE TABLE `oda_ozellik_tanim` (
 --
 
 INSERT INTO `oda_ozellik_tanim` (`ozellik_id`, `ozellik_adi`) VALUES
-(7, 'Güneş Alan Oda'),
-(6, 'Deniz Manzaralı'),
-(5, 'Havuzlu'),
-(8, 'Konforlu Bir Tatil'),
-(9, 'Oda Servisi Hizmeti');
+(7, 'Jakuzi'),
+(6, 'Mini Mutfak'),
+(5, 'Klima'),
+(8, 'Minibar'),
+(9, 'Balkon'),
+(10, 'Deniz Manzarası'),
+(11, 'Havuz Manzarası'),
+(12, 'Bağlantılı Odalar'),
+(13, 'Oturma Grubu'),
+(14, 'Termal Su');
 
 -- --------------------------------------------------------
 
@@ -63,6 +68,7 @@ INSERT INTO `oteller` (`otel_id`, `otel_adi`, `otel_aktif`) VALUES
 (1, 'Can\'s Hotel', '1'),
 (4, 'Mert\'s Hotel', '1'),
 (5, 'Rabia\'s Hotel', '1'),
+(22, 'Anıl Deneme', '1'),
 (17, 'Bervin\'s Hotel', '1');
 
 -- --------------------------------------------------------
@@ -87,7 +93,14 @@ INSERT INTO `otel_oda_ozellik` (`id`, `ozellik_id`, `otel_id`, `oda_id`) VALUES
 (10, 7, 1, 13),
 (9, 6, 1, 12),
 (8, 5, 1, 12),
-(12, 9, 1, 13);
+(12, 9, 1, 13),
+(96, 14, 22, 57),
+(95, 11, 22, 57),
+(94, 5, 22, 57),
+(86, 12, 22, 56),
+(85, 10, 22, 56),
+(84, 8, 22, 56),
+(83, 7, 22, 56);
 
 -- --------------------------------------------------------
 
@@ -109,13 +122,15 @@ CREATE TABLE `otel_oda_tanim` (
 --
 
 INSERT INTO `otel_oda_tanim` (`oda_id`, `otel_id`, `oda_adi`, `satis_durum`, `sil_durum`, `oda_aktif`) VALUES
-(13, 1, 'Standart Karışık Oda', '0', '0', '1'),
-(12, 1, 'Ultra Lüks Karışık Oda', '0', '0', '1'),
+(13, 1, 'Standart Karışık Oda', '1', '0', '1'),
+(12, 1, 'Ultra Lüks Karışık Oda', '1', '0', '1'),
 (7, 4, 'V.I.P. Oda', '0', '0', '1'),
 (8, 4, 'Ultra Lüks Oda', '0', '0', '1'),
 (9, 5, 'Standart Oda', '0', '0', '1'),
 (10, 17, 'Özel oda', '0', '0', '1'),
-(11, 17, 'Suit Oda', '0', '0', '1');
+(11, 17, 'Suit Oda', '0', '0', '1'),
+(56, 22, 'Ultra Lüks Oda', '1', '0', '1'),
+(57, 22, 'Standart Oda', '1', '0', '1');
 
 --
 -- Dökümü yapılmış tablolar için indeksler
@@ -153,25 +168,25 @@ ALTER TABLE `otel_oda_tanim`
 -- Tablo için AUTO_INCREMENT değeri `oda_ozellik_tanim`
 --
 ALTER TABLE `oda_ozellik_tanim`
-  MODIFY `ozellik_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `ozellik_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `oteller`
 --
 ALTER TABLE `oteller`
-  MODIFY `otel_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `otel_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `otel_oda_ozellik`
 --
 ALTER TABLE `otel_oda_ozellik`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- Tablo için AUTO_INCREMENT değeri `otel_oda_tanim`
 --
 ALTER TABLE `otel_oda_tanim`
-  MODIFY `oda_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `oda_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
