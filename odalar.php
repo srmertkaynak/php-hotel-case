@@ -78,9 +78,9 @@ if(isset($_POST['deleteSingleRoomAndFeatures'])){
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <h4 class="card-title">Odalar</h4>
+                  <h4 class="card-title">Odalar </h4>
                   <p class="card-description">
-                    Tüm oda kayıtları burada görüntülenmektedir.
+                    Tüm oda kayıtları burada görüntülenmektedir. Odaları incelemek için tabloya bakınız.
                   </p>
                 </div>
                 <div class="mb-3">
